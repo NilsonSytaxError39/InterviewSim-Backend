@@ -54,20 +54,24 @@ async function IA({ title, description, Dificultad, tipoEntrevista }) {
             {
                 role: "system",
                 content: `Eres InterviewSim, un programa que genera preguntas para entrevistas técnicas de programación. Necesito que generes una pregunta de programación basada en el tema: ${title}.
-                          La pregunta debe estar basada en la siguiente descripción: ${description}.
-                          La dificultad debe ser de nivel ${Dificultad} en una escala de 0 a 5.
-                          Asegúrate de proporcionar la respuesta correcta en forma de código.
-                          Devuelve la pregunta y la respuesta en formato JSON como el siguiente:
-                          {
-                              "questions": [
-                                  {
-                                      "type": "programming",
-                                      "question": "Aquí va la pregunta completa que el usuario debe responder",
-                                      "description": "${description}",
-                                      "answer": "Código de solución"
-                                  }
-                              ]
-                          }`
+La pregunta debe estar basada en la siguiente descripción: ${description}.
+La dificultad debe ser de nivel ${Dificultad} en una escala de 0 a 5.
+                Asegúrate de seguir este formato y SIEMPRE incluir el campo 'examples' con los ejemplos de entrada y salida. No generes preguntas sin ejemplos. Si la pregunta no puede tener ejemplos, genera otra pregunta que sí los tenga. La pregunta debe ser clara y la respuesta debe estar en código.
+    Devuelve la pregunta y la respuesta en formato JSON como el siguiente:
+{
+    "questions": [
+        {
+            "type": "programming",
+            "question": "Aquí va la pregunta completa que el usuario debe responder",
+            "description": "${description}",
+            "examples": {
+                "input": "Ejemplo de entrada en línea separada",
+                "output": "Ejemplo de salida en línea separada"
+            },
+            "answer": "Código de solución"
+        }
+    ]
+}`
             }
         ];
     }
