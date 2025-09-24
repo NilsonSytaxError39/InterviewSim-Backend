@@ -9,8 +9,8 @@ const interviewSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      required: true,
-    }, 
+      required: false,
+    },
     teacher: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Teacher",

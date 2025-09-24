@@ -117,7 +117,13 @@ export const getInterviewById = async (req, res) => {
         if (!interview) {
             return res.status(404).json({ message: 'Entrevista no encontrada' });
         }
-        const IAresult = await IA(interview);
+    // Pasar solo los campos requeridos a IA
+    const IAresult = await IA({
+      title: interview.title,
+      Dificultad: interview.Dificultad,
+      tipoEntrevista: interview.tipoEntrevista,
+      empresa: interview.empresa
+    });
         res.status(200).json({ interview, IAresult , tipoEntrevista: interview.tipoEntrevista }); 
     } catch (error) {
         console.error('Error al obtener entrevista por ID:', error);
