@@ -40,6 +40,11 @@ const interviewSchema = new mongoose.Schema(
       default: 0,
     },
 
+    detallesTecnicos: {
+      type: String,
+      required: false,
+    },
+
   },
   {
     timestamps: true,

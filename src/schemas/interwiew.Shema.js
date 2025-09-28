@@ -7,6 +7,7 @@ export const interviewSchema = z.object({
 	tipoEntrevista: z.enum(["opcionMultiple", "programacion"]),
 	// descripción opcional
 	description: z.string().optional(),
+	detallesTecnicos: z.string().optional(),
 	opciones: z.array(z.any()).optional(),
 	codigoBase: z.string().optional(),
 });

@@ -37,23 +37,26 @@ export const enviarResultadosPorCorreo = async (email, calificacion, recomendaci
 
 
 //crear entrevista
+
 export const createInterview = async (req, res) => {
-    const { title, description, empresa, Dificultad, userId, tipoEntrevista, opciones, codigoBase } = req.body;
+  const { title, description, empresa, Dificultad, userId, tipoEntrevista, opciones, codigoBase, detallesTecnicos } = req.body;
 
     const teacherId = req.userId || userId;
     if (!teacherId) {
         return res.status(400).json({ message: 'El ID del profesor es obligatorio.' });
     }
 
-    try {
-        const interviewData = {
-            title,
-            description,
-            empresa,
-            teacher: teacherId,
-            Dificultad,
-            tipoEntrevista,
-        };
+
+  try {
+    const interviewData = {
+      title,
+      description,
+      empresa,
+      teacher: teacherId,
+      Dificultad,
+      tipoEntrevista,
+      detallesTecnicos,
+    };
 
         if (tipoEntrevista === 'opcionMultiple') {
             interviewData.opciones = opciones;
@@ -61,8 +64,9 @@ export const createInterview = async (req, res) => {
             interviewData.codigoBase = codigoBase;
         }
 
-        const newInterview = new Interview(interviewData);
-        const interviewSaved = await newInterview.save();
+
+  const newInterview = new Interview(interviewData);
+  const interviewSaved = await newInterview.save();
 
         // Crear un mensaje detallado para la acción
         const actionMessage = `El profesor ha creado una nueva entrevista: "${title}" con una dificultad de "${Dificultad}" para la empresa "${empresa}".`;
@@ -75,8 +79,8 @@ export const createInterview = async (req, res) => {
         teacher.accionesEntrevistasTeacher.push(actionMessage);
         await teacher.save();
 
-        res.json(interviewSaved);
-        console.log('Entrevista creada:', interviewSaved);
+  res.json(interviewSaved);
+  console.log('Entrevista creada:', interviewSaved);
     } catch (error) {
         console.error('Error al crear entrevista:', error);
         res.status(500).json({ message: error.message });
@@ -122,9 +126,11 @@ export const getInterviewById = async (req, res) => {
       title: interview.title,
       Dificultad: interview.Dificultad,
       tipoEntrevista: interview.tipoEntrevista,
-      empresa: interview.empresa
+      empresa: interview.empresa,
+      detallesTecnicos: interview.detallesTecnicos,
+      description: interview.description
     });
-        res.status(200).json({ interview, IAresult , tipoEntrevista: interview.tipoEntrevista }); 
+    res.status(200).json({ interview, IAresult, tipoEntrevista: interview.tipoEntrevista, detallesTecnicos: interview.detallesTecnicos });
     } catch (error) {
         console.error('Error al obtener entrevista por ID:', error);
         res.status(500).json({ message: error.message });
