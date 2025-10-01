@@ -23,12 +23,12 @@ const interviewSchema = new mongoose.Schema(
       max: 5,
       default: 0,
     },
-    
-    empresa:{
+
+    empresa: {
       type: String,
       required: true,
     },
-    
+
     tipoEntrevista: {
       type: String,
       enum: ["opcionMultiple", "programacion"],
@@ -42,6 +42,11 @@ const interviewSchema = new mongoose.Schema(
 
     detallesTecnicos: {
       type: String,
+      required: false,
+    },
+
+    ejemplos: {
+      type: Object, // { input: "xx", output: "yy" }
       required: false,
     },
 

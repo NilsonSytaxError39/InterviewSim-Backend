@@ -10,4 +10,8 @@ export const interviewSchema = z.object({
 	detallesTecnicos: z.string().optional(),
 	opciones: z.array(z.any()).optional(),
 	codigoBase: z.string().optional(),
+	ejemplos: z.object({
+		input: z.string(),
+		output: z.string(),
+	}).optional(),
 });
