@@ -43,7 +43,7 @@ export const createInterview = async (req, res) => {
 
   const teacherId = req.userId || userId;
   if (!teacherId) {
-    return res.status(400).json({ message: 'El ID del profesor es obligatorio.' });
+    return res.status(400).json({ message: 'El ID del Entrevistador es obligatorio.' });
   }
 
 
@@ -69,12 +69,12 @@ export const createInterview = async (req, res) => {
     const interviewSaved = await newInterview.save();
 
     // Crear un mensaje detallado para la acción
-    const actionMessage = `El profesor ha creado una nueva entrevista: "${title}" con una dificultad de "${Dificultad}" para la empresa "${empresa}".`;
+    const actionMessage = `El entrevistador ha creado una nueva entrevista: "${title}" con una dificultad de "${Dificultad}" para la empresa "${empresa}".`;
 
-    // Buscar al profesor y agregar la acción a su lista de acciones
+    // Buscar al Entrevistador y agregar la acción a su lista de acciones
     const teacher = await Teacher.findById(teacherId);
     if (!teacher) {
-      return res.status(404).json({ message: 'Profesor no encontrado' });
+      return res.status(404).json({ message: 'Entrevistador no encontrado' });
     }
     teacher.accionesEntrevistasTeacher.push(actionMessage);
     await teacher.save();
@@ -143,14 +143,14 @@ export const getInterviewById = async (req, res) => {
   }
 };
 
-//Traer entrevistas por profesor
+//Traer entrevistas por Entrevistador
 export const getInterviewsByTeacher = async (req, res) => {
   const teacherId = req.params.id;
   try {
     const interviews = await Interview.find({ teacher: teacherId });
     res.json(interviews);
   } catch (error) {
-    console.error('Error al obtener entrevistas por profesor:', error);
+    console.error('Error al obtener entrevistas por entrevistador:', error);
     res.status(500).json({ message: error.message });
   }
 };

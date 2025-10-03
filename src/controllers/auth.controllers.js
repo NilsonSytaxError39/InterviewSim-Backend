@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 
 
-// Función para registrar usuarios o profesores
+// Función para registrar usuarios o Entrevistadores
 export const registerUserOrTeacher = async (req, res) => {
   const { email, password, userName, role } = req.body;
 
@@ -51,7 +51,7 @@ export const registerUserOrTeacher = async (req, res) => {
   }
 };
 
-// Función para iniciar sesión de usuarios o profesores
+// Función para iniciar sesión de usuarios o Entrevistadores
 export const loginUserOrTeacher = async (req, res) => {
   const { email, password, role } = req.body;
 
@@ -127,7 +127,7 @@ export const logout = async (req, res) => {
   return res.sendStatus(200);
 };
 
-// Función para obtener el perfil del usuario o profesor
+// Función para obtener el perfil del usuario oEntrevistador
 export const profile = async (req, res) => {
   try {
     const { id, role } = req.user;
@@ -155,7 +155,7 @@ export const profile = async (req, res) => {
   }
 };
 
-// Función para actualizar el perfil del usuario o profesor
+// Función para actualizar el perfil del usuario o Entrevistador
 export const updateProfile = async (req, res) => {
   const { id, role } = req.user;
   console.log("Datos recibidos en updateProfile:", req.body);
@@ -326,7 +326,7 @@ export const getGrades = async (req, res) => {
   }
 }
 
-// Función para obtener las calificaciones de un profesor
+// Función para obtener las calificaciones de un Entrevistador
 export const getAccionTeacher = async (req, res) => {
   const { id, role } = req.user;
   try {
@@ -340,7 +340,7 @@ export const getAccionTeacher = async (req, res) => {
 
     const teacher = await Teacher.findById(id);
     if (!teacher) {
-      return res.status(404).json({ message: "Profesor no encontrado" });
+      return res.status(404).json({ message: "Entrevistador no encontrado" });
     }
 
     const acciones = teacher.accionesEntrevistasTeacher || [];
