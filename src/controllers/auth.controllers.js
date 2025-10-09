@@ -376,7 +376,7 @@ export const recoveryPassword = async (req, res) => {
     }
 
     // Crear un token de recuperación con una expiración corta
-    const token = jwt.sign({ id: user._id, role }, process.env.CLAVE_SECRETA, { expiresIn: '15m' });
+    const token = jwt.sign({ id: user._id, role }, ocess.env.CLAVE_SECRETA, { expiresIn: '15m' });
 
     // Configurar el transporte de nodemailer
     const transporter = nodemailer.createTransport({
