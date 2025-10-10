@@ -23,7 +23,7 @@ app.use(cookieParser());
 // Configuración de CORS
 const allowedOrigins = isProduction
   ? [
-      "https://interviewsim-frontend.netlify.app", // Frontend en Netlify (sin espacios)
+      "https://interviewsim-frontend.netlify.app", // ✅ Sin espacios
       "http://localhost:4000", // Desarrollo local
       "http://192.168.20.25:4000"
     ]
@@ -55,7 +55,7 @@ app.use(
   })
 );
 
-// Ruta de bienvenida (agregada)
+// Ruta de bienvenida
 app.get('/', (req, res) => {
   res.json({
     message: "InterviewSim Backend API",
@@ -74,18 +74,6 @@ app.get('/', (req, res) => {
 // Rutas
 app.use("/api", usuario);
 app.use("/interview", interview);
-
-// Archivos estáticos (solo en producción)
-/*
-if (isProduction) {
-  const __dirname = path.resolve();
-  app.use(express.static(path.join(__dirname, "client/build")));
-
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "client/build", "index.html"));
-  });
-}
-*/
 
 // Manejo global de errores
 app.use((err, req, res, next) => {
