@@ -1,48 +1,47 @@
-import jwt from "jsonwebtoken";
+// Función para registrar usuarios o Entrevistadores
+export const registerUserOrTeacher = async (req, res) => {
+  const { email, password, userName, role } = req.body;
 
-export const auth = (req, res, next) => {
   try {
-    // Intenta obtener el token de cookies
-    const token = req.cookies.token;
-    
-    console.log("==================================");
-    console.log("🔍 Middleware de autenticación ejecutado");
-    console.log("Token recibido:", token ? "Sí" : "No");
-    console.log("CLAVE_SECRETA en entorno:", process.env.CLAVE_SECRETA ? "SET" : "NOT SET");
-    console.log("URL solicitada:", req.method, req.originalUrl);
-    console.log("Headers:", req.headers);
-    console.log("Cookies:", req.cookies);
-    console.log("==================================");
+    let existingUser;
+    let Model;
 
-    if (!token) {
-      console.log("❌ No hay token en cookies");
-      return res.status(401).json({ 
-        message: "No token, authorization denied",
-        error: true 
-      });
+    if (role === 'student') {
+      Model = User;
+    } else if (role === 'teacher') {
+      Model = Teacher;
+    } else {
+      return res.status(400).json({ message: "Rol inválido" });
     }
 
-    // Verifica el token
-    jwt.verify(token, process.env.CLAVE_SECRETA, (error, user) => {
-      if (error) {
-        console.log("❌ Error al verificar token:", error.message);
-        console.log("❌ Token:", token);
-        console.log("❌ CLAVE_SECRETA:", process.env.CLAVE_SECRETA);
-        return res.status(401).json({ 
-          message: "Token is not valid", 
-          error: error.message,
-          token: token.substring(0, 20) + "..." // Mostrar solo los primeros caracteres
-        });
-      }
-      
-      req.user = user;
-      console.log("✅ Usuario autenticado:", user);
-      console.log("✅ Rol del usuario:", user.role);
-      console.log("✅ ID del usuario:", user.id);
-      next();
+    existingUser = await Model.findOne({ email });
+
+    if (existingUser) {
+      return res.status(401).json({ message: `El correo electrónico ya está en uso por otro ${role}` });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+    const newUser = new Model({
+      userName,
+      email,
+      password: passwordHash,
+      role
+    });
+
+    const userSaved = await newUser.save();
+    
+    // ✅ Cambiado: Usa la misma clave secreta que login
+    const token = jwt.sign({ id: userSaved._id, role }, process.env.CLAVE_SECRETA, { expiresIn: "7d" });
+    
+    res.cookie('token', token, { httpOnly: true, secure: true });
+    res.json({
+      id: userSaved._id,
+      userName: userSaved.userName,
+      email: userSaved.email,
+      role: userSaved.role
     });
   } catch (error) {
-    console.error("❌ Error en middleware auth:", error);
-    return res.status(500).json({ message: error.message });
+    console.error('Error al registrar:', error);
+    res.status(500).json({ message: error.message });
   }
 };
