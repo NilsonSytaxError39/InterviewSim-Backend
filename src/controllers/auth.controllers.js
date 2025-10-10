@@ -5,7 +5,6 @@ import { createAccessToken } from '../libs/jwt.js';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 
-
 // Función para registrar usuarios o Entrevistadores
 export const registerUserOrTeacher = async (req, res) => {
   const { email, password, userName, role } = req.body;
@@ -98,7 +97,8 @@ export const loginUserOrTeacher = async (req, res) => {
       });
     }
 
-    const token = jwt.sign({ id: user._id, role }, process.env.CLAVE_SECRETA, { expiresIn: "1h" });
+    // ✅ Ajustado: Token expira en 7 días
+    const token = jwt.sign({ id: user._id, role }, process.env.CLAVE_SECRETA, { expiresIn: "7d" });
     res.cookie("token", token, { httpOnly: true, secure: true });
 
     return res.json({
@@ -228,10 +228,7 @@ export const verifyToken = async (req, res) => {
 
     jwt.verify(token, process.env.CLAVE_SECRETA, async (err, decoded) => {
       if (err) {
-        return {
-          message: "Token inválido",
-          error: true,
-        }
+        return res.status(401).json({ message: "Token inválido" }); // ✅ Corregido: no retornar objeto vacío
       }
 
       const { id, role } = decoded;
@@ -375,8 +372,9 @@ export const recoveryPassword = async (req, res) => {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
-    // Crear un token de recuperación con una expiración corta
-    const token = jwt.sign({ id: user._id, role }, ocess.env.CLAVE_SECRETA, { expiresIn: '15m' });
+    // ✅ Corregido: "process" en lugar de "rocess"
+    // ✅ Ajustado: Token de recuperación expira en 1 hora
+    const token = jwt.sign({ id: user._id, role }, process.env.CLAVE_SECRETA, { expiresIn: '1h' });
 
     // Configurar el transporte de nodemailer
     const transporter = nodemailer.createTransport({
@@ -400,7 +398,7 @@ export const recoveryPassword = async (req, res) => {
             <div style="text-align: center; margin: 20px 0;">
               <a href="${process.env.FRONTEND_URL}/reset-password/${token}" target="_blank" style="display: inline-block; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #283e56; text-decoration: none; border-radius: 5px;">Recuperar contraseña</a>
             </div>
-            <p style="font-size: 14px; color: #666;">Este enlace expirará en 15 minutos.</p>
+            <p style="font-size: 14px; color: #666;">Este enlace expirará en 1 hora.</p>
             <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
             <p style="font-size: 12px; color: #999; text-align: center;">Si no solicitaste esta acción, puedes ignorar este correo.</p>
           </div>
