@@ -4,11 +4,16 @@ import app from "./app.js";
 async function main() {
   try {
     await connectDB();
-    app.listen(process.env.RUNNING_BACKEND, () => {
-      console.log(`Listening on port ${process.env.RUNNING_BACKEND}`);
+    
+    // Usa process.env.PORT para Render, sino RUNNING_BACKEND
+    const PORT = process.env.PORT || process.env.RUNNING_BACKEND || 8000;
+    
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
     });
   } catch (error) {
-    console.error(error);
+    console.error("Error starting server:", error);
+    process.exit(1); // Termina el proceso si hay error
   }
 }
 
