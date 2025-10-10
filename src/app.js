@@ -47,6 +47,7 @@ app.use("/api", usuario);
 app.use("/interview", interview);
 
 // Archivos estáticos (solo en producción)
+/*
 if (isProduction) {
   const __dirname = path.resolve();
   app.use(express.static(path.join(__dirname, "client/build")));
@@ -55,7 +56,7 @@ if (isProduction) {
     res.sendFile(path.join(__dirname, "client/build", "index.html"));
   });
 }
-
+*/
 // Manejo global de errores
 app.use((err, req, res, next) => {
   console.error(err.stack);
