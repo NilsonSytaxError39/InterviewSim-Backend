@@ -22,8 +22,16 @@ app.use(cookieParser());
 
 // Configuración de CORS
 const allowedOrigins = isProduction
-  ? ["http://localhost:4000", 'http://192.168.20.25:4000', 'https://interviewsim-frontend.netlify.app/']
-  : ["https://proyecto-interviewsim.onrender.com", "https://poryectowwwinterviewsim-180808156072.us-central1.run.app"]
+  ? [
+      "https://interviewsim-frontend.netlify.app", // Frontend en Netlify (sin espacios)
+      "http://localhost:4000", // Desarrollo local
+      "http://192.168.20.25:4000"
+    ]
+  : [
+      "http://localhost:3000", // Desarrollo local con Create React App
+      "http://localhost:4000",
+      "http://192.168.20.25:4000"
+    ];
 
 app.use(
   cors({
@@ -47,6 +55,22 @@ app.use(
   })
 );
 
+// Ruta de bienvenida (agregada)
+app.get('/', (req, res) => {
+  res.json({
+    message: "InterviewSim Backend API",
+    status: "OK",
+    version: "1.0.0",
+    endpoints: [
+      "/api/login",
+      "/api/register", 
+      "/api/verify",
+      "/interview/api/...",
+    ],
+    environment: process.env.NODE_ENV || "development"
+  });
+});
+
 // Rutas
 app.use("/api", usuario);
 app.use("/interview", interview);
@@ -62,6 +86,7 @@ if (isProduction) {
   });
 }
 */
+
 // Manejo global de errores
 app.use((err, req, res, next) => {
   console.error(err.stack);
