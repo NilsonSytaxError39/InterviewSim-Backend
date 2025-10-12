@@ -43,7 +43,7 @@ export const createInterview = async (req, res) => {
 
   const teacherId = req.userId || userId;
   if (!teacherId) {
-    return res.status(400).json({ message: 'El ID del Entrevistador es obligatorio.' });
+    return res.status(400).json({ message: 'El ID del profesor es obligatorio.' });
   }
 
 
@@ -69,12 +69,12 @@ export const createInterview = async (req, res) => {
     const interviewSaved = await newInterview.save();
 
     // Crear un mensaje detallado para la acción
-    const actionMessage = `El entrevistador ha creado una nueva entrevista: "${title}" con una dificultad de "${Dificultad}" para la empresa "${empresa}".`;
+    const actionMessage = `El profesor ha creado una nueva entrevista: "${title}" con una dificultad de "${Dificultad}" para la empresa "${empresa}".`;
 
-    // Buscar al Entrevistador y agregar la acción a su lista de acciones
+    // Buscar al profesor y agregar la acción a su lista de acciones
     const teacher = await Teacher.findById(teacherId);
     if (!teacher) {
-      return res.status(404).json({ message: 'Entrevistador no encontrado' });
+      return res.status(404).json({ message: 'Profesor no encontrado' });
     }
     teacher.accionesEntrevistasTeacher.push(actionMessage);
     await teacher.save();
@@ -121,6 +121,7 @@ export const getInterviewById = async (req, res) => {
     if (!interview) {
       return res.status(404).json({ message: 'Entrevista no encontrada' });
     }
+    
     // Pasar solo los campos requeridos a IA
     const IAresult = await IA({
       title: interview.title,
@@ -131,26 +132,35 @@ export const getInterviewById = async (req, res) => {
       description: interview.description
     });
 
+    // ✅ Añade empresa a IAresult
+    IAresult.empresa = interview.empresa;
+
     if (interview.tipoEntrevista === "programacion" && IAresult.questions[0].examples) {
       interview.ejemplos = IAresult.questions[0].examples;
       await interview.save();
     }
 
-    res.status(200).json({ interview, IAresult, tipoEntrevista: interview.tipoEntrevista, detallesTecnicos: interview.detallesTecnicos });
+    res.status(200).json({ 
+      interview, 
+      IAresult, 
+      tipoEntrevista: interview.tipoEntrevista, 
+      detallesTecnicos: interview.detallesTecnicos 
+    });
   } catch (error) {
     console.error('Error al obtener entrevista por ID:', error);
     res.status(500).json({ message: error.message });
   }
 };
 
-//Traer entrevistas por Entrevistador
+
+//Traer entrevistas por profesor
 export const getInterviewsByTeacher = async (req, res) => {
   const teacherId = req.params.id;
   try {
     const interviews = await Interview.find({ teacher: teacherId });
     res.json(interviews);
   } catch (error) {
-    console.error('Error al obtener entrevistas por entrevistador:', error);
+    console.error('Error al obtener entrevistas por profesor:', error);
     res.status(500).json({ message: error.message });
   }
 };
