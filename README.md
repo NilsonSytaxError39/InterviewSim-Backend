@@ -88,6 +88,7 @@ model: gpt-3.5-turbo
 La respuesta se limpia y se guarda en MongoDB para ser mostrada en el frontend.
 
 🧩 Autor
+
 Nilson Andrés Cuero Ocoro
 
 Sebastian Perez Bastidas
