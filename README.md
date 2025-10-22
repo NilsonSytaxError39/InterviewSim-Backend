@@ -27,11 +27,17 @@ npm install
 # Crear el archivo .env en la raíz
 
 Ejemplo de .env:
+
 RUNNING_BACKEND=8000
+
 MONGO_URI=mongodb+srv://<usuario>:<password>@cluster.mongodb.net/interviewsim
+
 OPENAI_API_KEY=sk-<tu_api_key>
+
 EMAIL_USER=tu_correo@gmail.com
+
 EMAIL_PASS=tu_contraseña
+
 NODE_ENV=development
 
 ▶️ Ejecución
@@ -48,12 +54,19 @@ Servidor por defecto en:
 📂 Estructura básica
 src/
 ├── index.js              # Entrada principal
+
 ├── app.js                # Configuración de Express
+
 ├── db.js                 # Conexión a MongoDB
+
 ├── routes/               # Definición de rutas
+
 ├── controllers/          # Lógica del sistema
+
 ├── models/               # Modelos Mongoose
+
 ├── middlewares/          # Autenticación y validación
+
 └── IA/                   # Integración con OpenAI
 
 🤖 Generación de preguntas con IA
@@ -76,6 +89,9 @@ La respuesta se limpia y se guarda en MongoDB para ser mostrada en el frontend.
 
 🧩 Autor
 Nilson Andrés Cuero Ocoro
+
 Sebastian Perez Bastidas
+
 Proyecto académico: InterviewSim
+
 Facultad de Ingeniería de Sistemas
