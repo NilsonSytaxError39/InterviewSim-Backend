@@ -1,4 +1,4 @@
-// ... (otros imports)
+import OpenAI from 'openai';
 
 async function IA({ title, description, Dificultad, tipoEntrevista, detallesTecnicos }) {
     let message;
