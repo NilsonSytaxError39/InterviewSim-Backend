@@ -1,9 +1,8 @@
-import OpenAI from 'openai';
+// ... (otros imports)
 
 async function IA({ title, description, Dificultad, tipoEntrevista, detallesTecnicos }) {
     let message;
 
-    // Si hay detallesTecnicos, los agregamos a la descripción y lo destacamos para mayor complejidad
     const descripcionFinal = detallesTecnicos && detallesTecnicos.trim() !== ""
         ? `${description ? description + ' ' : ''}ATENCIÓN: Usa los siguientes detalles técnicos para aumentar la complejidad y profundidad de las preguntas: ${detallesTecnicos}`
         : description;
@@ -17,16 +16,18 @@ async function IA({ title, description, Dificultad, tipoEntrevista, detallesTecn
                           La dificultad debe ser de nivel ${Dificultad} en una escala de 0 a 5.
                           Asegúrate de proporcionar las respuestas correctas para todas las preguntas.
 
-                          Para la pregunta de programación, incluye la pregunta completa que el usuario debe responder y proporciona una solución en código.
-                          Si existen detalles técnicos, DEBES usarlos para aumentar la complejidad y profundidad de la pregunta de programación.
-                          ⚠️ Reglas adicionales (válidas para cualquier caso):  
-                          - Si el usuario no proporciona una descripción, genera una descripción genérica de programación que tenga sentido en el contexto del título y redacta el enunciado estilo LeetCode en alrededor de 30 palabras.  
+                          ⚠️ Reglas específicas para este tipo (opción múltiple):
+                          - **DEBES generar EXACTAMENTE 5 preguntas de tipo 'multiple_choice'.**
+                          - **NO DEBES generar ninguna pregunta de tipo 'programming' ni de ningún otro tipo.**
+                          - **NO DEBES incluir secciones como 'answer' con código, ni 'examples', ni 'description' fuera del formato de opción múltiple especificado.**
+                          - Si existen detalles técnicos, úsalos para hacer las preguntas de opción múltiple más complejas y profundas.
+
+                          ⚠️ Reglas generales (válidas para cualquier caso, aplicables aquí si son relevantes para preguntas de opción múltiple):  
+                          - Si el usuario no proporciona una descripción, genera una descripción genérica de programación que tenga sentido en el contexto del título para contextualizar las preguntas de opción múltiple.  
                           - Si el título o la descripción son incoherentes, incompletos, ambiguos o inentendibles, **no generes nada**.  
                           - Siempre devuelve el resultado en formato JSON con la estructura indicada.  
-                          - Siempre incluye ejemplos de **entrada y salida** claros y coherentes. Si no es posible crear ejemplos, no generes nada.  
-                          - Si en la descripción o en los detalles técnicos se mencionan ejemplos de entrada o salida, úsalos como base para los ejemplos generados.
                           - La pregunta debe ser clara, autocontenida y resoluble.  
-                          - La respuesta siempre debe estar en **código ejecutable y correcto** en el lenguaje más natural para el tema.
+                          - La respuesta correcta debe estar claramente identificada.
                           
                           Devuelve las preguntas y respuestas en formato JSON como el siguiente:
                           {
@@ -66,6 +67,7 @@ async function IA({ title, description, Dificultad, tipoEntrevista, detallesTecn
             }
         ];
     } else if (tipoEntrevista === 'programacion') {
+        // Mantén tu contenido original para 'programacion' sin cambios
         message = [
             {
                 role: "system",
@@ -106,16 +108,17 @@ Devuelve la pregunta y la respuesta en formato JSON como el siguiente:
         ];
     }
 
+    // ... (resto del código permanece igual)
     const openai = new OpenAI({ apiKey: process.env.TOKEN_OPENAI });
 
     try {
         const completion = await openai.chat.completions.create({
             model: "gpt-4.1",
             messages: message,
-            max_tokens: 1000,  
+            max_tokens: 1000,
         });
 
-        // Validación para asegurar que los ejemplos existen en preguntas de programación
+        // La validación de ejemplos ya está correctamente solo para 'programacion'
         const result = JSON.parse(completion.choices[0].message.content);
         if (
             tipoEntrevista === 'programacion' &&
